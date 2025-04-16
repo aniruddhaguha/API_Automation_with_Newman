@@ -1,0 +1,1394 @@
+{
+	"info": {
+		"_postman_id": "49dae9ff-170b-47cd-9d32-8424418d096a",
+		"name": "Anirudha",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15312743"
+	},
+	"item": [
+		{
+			"name": "Health Checck",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Notes API is Running\")\r",
+							"})\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health-check",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health-check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var name = pm.variables.replaceIn(\"{{$randomFullName}}\");\r",
+							"pm.environment.set(\"name\", name);\r",
+							"\r",
+							"var email = pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+							"pm.environment.set(\"email\", email);\r",
+							"\r",
+							"var password = pm.variables.replaceIn(\"{{$randomPassword}}\");\r",
+							"pm.environment.set(\"password\", password);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode == 201) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(201)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"User account created successfully\")\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"name\"))\r",
+							"})\r",
+							"pm.test(\"Email Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.email.toLowerCase()).to.eql(pm.environment.get(\"email\").toLowerCase())\r",
+							"})\r",
+							"} else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Invalid input data\")\r",
+							"    })\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"name\": \"{{name}}\",\r\n        \"email\": \"{{email}}\",\r\n        \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log In",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode == 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"id\",jsonData.data.id)\r",
+							"pm.environment.set(\"token\",jsonData.data.token)\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Login successful\")\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"name\"))\r",
+							"})\r",
+							"pm.test(\"Email Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.email.toLowerCase()).to.eql(pm.environment.get(\"email\").toLowerCase())\r",
+							"})\r",
+							"pm.test(\"Token Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.token).to.not.be.null\r",
+							"})\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}else if(statuscode==401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"email\": \"{{email}}\",\r\n        \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode == 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Profile successful\")\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"name\"))\r",
+							"})\r",
+							"pm.test(\"Email Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.email.toLowerCase()).to.eql(pm.environment.get(\"email\").toLowerCase())\r",
+							"})\r",
+							"pm.test(\"Id Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"id\"))\r",
+							"})\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}else if(statuscode==401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"accept\": \"application/json\",\r\n        \"x-auth-token\": \"{{token}}\"\r\n   }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var updatedName = pm.variables.replaceIn(\"{{$randomFullName}}\")\r",
+							"pm.environment.set(\"updatedName\", updatedName)\r",
+							"\r",
+							"var phone = pm.variables.replaceIn(\"{{$randomPhoneNumber}}\")\r",
+							"pm.environment.set(\"phone\", phone.replace(/-/g, \"\"))\r",
+							"\r",
+							"var company = pm.variables.replaceIn(\"{{$randomCompanyName}}\")\r",
+							"pm.environment.set(\"company\", company)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode == 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Profile updated successful\")\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"updatedName\"))\r",
+							"})\r",
+							"pm.test(\"Email Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.email.toLowerCase()).to.eql(pm.environment.get(\"email\").toLowerCase())\r",
+							"})\r",
+							"pm.test(\"Id Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"id\"))\r",
+							"})\r",
+							"pm.test(\"Phone Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.phone).to.eql(pm.environment.get(\"phone\"))\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.company).to.eql(pm.environment.get(\"company\"))\r",
+							"})\r",
+							"} else if(statuscode == 500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}else if(statuscode == 400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}else if(statuscode == 401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{updatedName}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"company\": \"{{company}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log Out",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode == 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"User has been successfully logged out\")\r",
+							"})\r",
+							"} else if(statuscode == 500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"} else if(statuscode == 401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"} else if(statuscode == 400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/users/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log In Again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"id\",jsonData.data.id)\r",
+							"pm.environment.set(\"token\",jsonData.data.token)\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Login successful\")\r",
+							"})\r",
+							"pm.test(\"Name Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(pm.environment.get(\"updatedName\"))\r",
+							"})\r",
+							"pm.test(\"Email Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.email.toLowerCase()).to.eql(pm.environment.get(\"email\").toLowerCase())\r",
+							"})\r",
+							"pm.test(\"Token Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.token).to.not.be.null\r",
+							"})\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}else if(statuscode==401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"email\": \"{{email}}\",\r\n        \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.environment.set(\"id_2\",jsonData.data.id)\r",
+							"    pm.environment.set(\"user_id\",jsonData.data.user_id)\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Note successfully created\")\r",
+							"})\r",
+							"pm.test(\"Title Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.title).to.eql(pm.environment.get(\"title\"))\r",
+							"})\r",
+							"pm.test(\"Description Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.description).to.eql(pm.environment.get(\"description\"))\r",
+							"})\r",
+							"pm.test(\"Category Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.category).to.eql(pm.environment.get(\"category\"))\r",
+							"})\r",
+							"pm.test(\"Completed Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data.completed.toString()).to.eql(\"false\")\r",
+							"})\r",
+							"\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"} else if(statuscode==401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"} else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var title = pm.variables.replaceIn(\"{{$randomStreetName}}\")\r",
+							"pm.environment.set(\"title\", title)\r",
+							"\r",
+							"var description = pm.variables.replaceIn(\"{{$randomCatchPhrase}}\")\r",
+							"pm.environment.set(\"description\", description)\r",
+							"\r",
+							"var category\r",
+							"pm.environment.set(\"category\", _.sample([\"Home\", \"Work\", \"Personal\"]))\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"title\": \"{{title}}\",\r\n        \"description\": \"{{description}}\",\r\n        \"category\": \"{{category}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Notes successfully retrieved\")\r",
+							"})\r",
+							"pm.test(\"Id Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].id).to.eql(pm.environment.get(\"id_2\"))\r",
+							"})\r",
+							"pm.test(\"Title Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].title).to.eql(pm.environment.get(\"title\"))\r",
+							"})\r",
+							"pm.test(\"Description Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].description).to.eql(pm.environment.get(\"description\"))\r",
+							"})\r",
+							"pm.test(\"Category Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].category).to.eql(pm.environment.get(\"category\"))\r",
+							"})\r",
+							"pm.test(\"Completed Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].completed.toString()).to.eql(\"false\")\r",
+							"})\r",
+							"pm.test(\"User Id Field Validation\", function () {\r",
+							"    pm.expect(jsonData.data[0].user_id).to.eql(pm.environment.get(\"user_id\"))\r",
+							"})\r",
+							"\r",
+							"} else if(statuscode==500){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"}else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}else if(statuscode==401){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notes Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(true)\r",
+							"    });\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(200)\r",
+							"    });\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Note successfully retrieved\");\r",
+							"    })\r",
+							"    pm.test(\"Id Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"id_2\"))\r",
+							"    });\r",
+							"    pm.test(\"Title Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.title).to.eql(pm.environment.get(\"title\"))\r",
+							"    });\r",
+							"    pm.test(\"Description Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.description).to.eql(pm.environment.get(\"description\"))\r",
+							"    });\r",
+							"    pm.test(\"Category Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.category).to.eql(pm.environment.get(\"category\"))\r",
+							"    });\r",
+							"    pm.test(\"Completed Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.completed.toString()).to.eql(\"false\")\r",
+							"    });\r",
+							"    pm.test(\"User Id Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.user_id).to.eql(pm.environment.get(\"user_id\"))\r",
+							"    });\r",
+							"} else if (statuscode == 500) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    });\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    });\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    });\r",
+							"} else if (statuscode == 400) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    });\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    });\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    });\r",
+							"} else if (statuscode == 401) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    });\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    });\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/notes/{{id_2}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes",
+						"{{id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(true)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(200)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Note successfully Updated\");\r",
+							"    })\r",
+							"    pm.test(\"Id Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"id_2\"))\r",
+							"    })\r",
+							"    pm.test(\"Title Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.title).to.eql(pm.environment.get(\"updateTitle\"))\r",
+							"    })\r",
+							"    pm.test(\"Description Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.description).to.eql(pm.environment.get(\"updateDescription\"))\r",
+							"    })\r",
+							"    pm.test(\"Category Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.category).to.eql(pm.environment.get(\"updateCategory\"))\r",
+							"    })\r",
+							"    pm.test(\"Completed Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.completed.toString()).to.eql(\"false\")\r",
+							"    })\r",
+							"    pm.test(\"User Id Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.user_id).to.eql(pm.environment.get(\"user_id\"))\r",
+							"    })\r",
+							"} else if (statuscode == 500) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"} else if (statuscode == 400) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"} else if (statuscode == 401) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var updateTitle = pm.variables.replaceIn(\"{{$randomStreetName}}\")\r",
+							"pm.environment.set(\"updateTitle\", updateTitle)\r",
+							"\r",
+							"var updateDescription = pm.variables.replaceIn(\"{{$randomCatchPhrase}}\")\r",
+							"pm.environment.set(\"updateDescription\", updateDescription)\r",
+							"\r",
+							"var updateCategory\r",
+							"pm.environment.set(\"updateCategory\", _.sample([\"Home\", \"Work\", \"Personal\"]))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"title\": \"{{updateTitle}}\",\r\n        \"description\": \"{{updateDescription}}\",\r\n        \"completed\": \"true\",\r\n        \"category\": \"{{updateCategory}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes/{{id_2}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes",
+						"{{id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch  Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(true)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(200)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Note successfully Updated\");\r",
+							"    })\r",
+							"    pm.test(\"Completed Field Validation\", function () {\r",
+							"        pm.expect(jsonData.data.completed.toString()).to.eql(\"true\")\r",
+							"    })\r",
+							"\r",
+							"} else if (statuscode == 500) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"} else if (statuscode == 400) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"} else if (statuscode == 401) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var updateCompleted = true\r",
+							"pm.environment.set(\"updateCompleted\", updateCompleted)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"completed\": \"{{updateCompleted}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes/{{id_2}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes",
+						"{{id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(true)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(200)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Note successfully deleted\");\r",
+							"    })\r",
+							"\r",
+							"} else if (statuscode == 500) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(500)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Internal Error Server\")\r",
+							"    })\r",
+							"} else if (statuscode == 400) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"} else if (statuscode == 401) {\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(401)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Unauthorized Request\")\r",
+							"    })\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/notes/{{id_2}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes",
+						"{{id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statuscode = pm.response.code;\r",
+							"\r",
+							"if (statuscode === 200) {\r",
+							"    var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Success Field Validation\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(true)\r",
+							"})\r",
+							"pm.test(\"Status Field Validation\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(200)\r",
+							"})\r",
+							"pm.test(\"Message Field Validation\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Account successfully deleted\")\r",
+							"})\r",
+							"} else if(statuscode==400){\r",
+							"    pm.test(\"Success Field Validation\", function () {\r",
+							"        pm.expect(jsonData.success).to.eql(false)\r",
+							"    })\r",
+							"    pm.test(\"Status Field Validation\", function () {\r",
+							"        pm.expect(jsonData.status).to.eql(400)\r",
+							"    })\r",
+							"    pm.test(\"Message Field Validation\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Bad Request\")\r",
+							"    })\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/delete-account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"delete-account"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
